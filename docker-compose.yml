@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:13.1
+    container_name: E-commerce-nestjs-postgres-db
+    restart: always
+    environment:
+      POSTGRES_USER: mohamed
+      POSTGRES_PASSWORD: mo2003
+      POSTGRES_DB: ecommerce
+    volumes:
+      - ecommerce_postgres_db:/data/postgres
+    ports:
+      - 5432:5432
+
+  adminer:
+    image: adminer
+    container_name: E-commerce-nestjs-adminer
+    restart: always
+    ports:
+      - 8080:8080
+
+volumes:
+  ecommerce_postgres_db:
