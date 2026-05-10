@@ -9,13 +9,17 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  Request,
+  UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from './user.entity';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDTO } from './dtos/update-user.dto';
+import { Roles } from './decorators/roles.decorator';
+import { JwtGuard } from './guards/jwt.auth.guard';
 
-@Controller('users')
+@Controller('v1/users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
@@ -30,7 +34,9 @@ export class UserController {
   }
 
   @Post()
-  async create(@Body() createUserDto: CreateUserDto): Promise<User> {
+  @Roles(['admin'])
+  @UseGuards(JwtGuard)
+  async create(@Body() createUserDto: CreateUserDto): Promise<object> {
     return this.userService.create(createUserDto);
   }
 
