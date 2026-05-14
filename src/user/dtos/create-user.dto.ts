@@ -48,6 +48,7 @@ export class CreateUserDto {
   address: string;
 
   @IsBoolean({ message: 'active either true or false' })
+  @IsOptional()
   active: boolean;
 
   @IsString()

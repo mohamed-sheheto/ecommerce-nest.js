@@ -7,6 +7,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
+import { v7 as uuidv7 } from 'uuid'
 export enum role {
   'user',
   'admin',
@@ -18,8 +19,8 @@ export enum gender {
 
 @Entity('users')
 export class User {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string = uuidv7();
 
   @Column()
   @MinLength(3, { message: 'name must be at least 3 characters' })
@@ -32,7 +33,7 @@ export class User {
   @IsNotEmpty()
   email: string;
 
-  @Column()
+  @Column({ select: false })
   @MinLength(8, { message: 'password must be at least 8 characters' })
   @MaxLength(20, { message: 'password must be at most 20 characters' })
   @IsNotEmpty()
@@ -53,7 +54,7 @@ export class User {
   @Column({ nullable: true })
   address: string;
 
-  @Column({ type: 'enum', enum: [true, false], default: true })
+  @Column({ default: true })
   active: boolean;
 
   @Column({ nullable: true })

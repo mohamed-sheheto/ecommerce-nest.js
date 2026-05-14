@@ -6,6 +6,7 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  ParseIntPipe,
   ParseUUIDPipe,
   Patch,
   Post,
@@ -21,36 +22,60 @@ import { JwtGuard } from './guards/jwt.auth.guard';
 
 @Controller('v1/users')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) { }
 
+  // @docs Admin can get all users
+  //@Route Get api/v1/users
+  //@access private [admin]
   @Get()
+  @Roles(['admin'])
+  @UseGuards(JwtGuard)
   async findAll(): Promise<User[]> {
     return this.userService.findAll();
   }
 
+  // @docs Admin can get one user by its id
+  //@Route Get api/v1/users/:id
+  //@access private [admin]
   @Get(':id')
-  async findOne(@Param('id', ParseUUIDPipe) id: number): Promise<User> {
+  @Roles(['admin'])
+  @UseGuards(JwtGuard)
+  async findOne(@Param('id', ParseUUIDPipe) id: string): Promise<{ status: string, statusCode: number, data: User }> {
     return this.userService.findOne(id);
   }
 
+
+  // @docs Admin can create user
+  //@Route Post api/v1/users
+  //@access private [admin]
   @Post()
   @Roles(['admin'])
   @UseGuards(JwtGuard)
-  async create(@Body() createUserDto: CreateUserDto): Promise<object> {
+  async create(@Body() createUserDto: CreateUserDto): Promise<{ status: string, statusCode: number, data: User }> {
     return this.userService.create(createUserDto);
   }
 
+  // @docs Admin can udpate user by id
+  //@Route Post api/v1/users/:id
+  //@access private [admin]
   @Patch(':id')
-  update(
-    @Param('id', ParseUUIDPipe) id: number,
+  @Roles(['admin'])
+  @UseGuards(JwtGuard)
+  async update(
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() UpdateUserDTO: UpdateUserDTO,
-  ): Promise<User> {
+  ): Promise<{ status: string, statusCode: number, data: User }> {
     return this.userService.update(id, UpdateUserDTO);
   }
 
+  // @docs Admin can delete user by id
+  //@Route Post api/v1/users/:id
+  //@access private [admin]
   @Delete(':id')
+  @Roles(['admin'])
+  @UseGuards(JwtGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
-  async delete(@Param('id', ParseUUIDPipe) id: number): Promise<void> {
+  async delete(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
     return this.userService.delete(id);
   }
 }
