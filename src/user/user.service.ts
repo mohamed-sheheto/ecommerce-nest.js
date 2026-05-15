@@ -1,18 +1,42 @@
-import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException, Query } from '@nestjs/common';
 import { User } from './user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDTO } from './dtos/update-user.dto';
 import * as bcrypt from 'bcrypt'
+import { QueryDto } from 'src/common/dtos/query.dto';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
   ) { }
-  async findAll(): Promise<User[]> {
-    return await this.userRepository.find();
+  async findAll(@Query() query: QueryDto): Promise<object> {
+    const { page, limit, search, sortBy, order } = query
+    const queryBuilder = this.userRepository.createQueryBuilder("user");
+
+    if (search) queryBuilder.andWhere('(user.name ILIKE :search OR user.email ILIKE :search)', { search: `%${search}%` })
+
+    const allowedCols: string[] = ['name', 'email', 'createdAt']
+    const col = allowedCols.includes(sortBy) ? sortBy : 'createdAt';
+    queryBuilder.orderBy(`user.${col}`, order)
+
+
+    const total = await queryBuilder.getCount()
+    const data = await queryBuilder.skip((page - 1) * limit).take(limit).getMany()
+
+    return {
+      meta: {
+        results: total,
+        page,
+        limit,
+        lastPage: Math.ceil(total / limit),
+      },
+      data: {
+        data
+      }
+    };
   }
 
   async findOne(id: string): Promise<{ status: string, statusCode: number, data: User }> {

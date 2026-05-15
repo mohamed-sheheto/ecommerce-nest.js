@@ -6,11 +6,10 @@ import {
   HttpCode,
   HttpStatus,
   Param,
-  ParseIntPipe,
   ParseUUIDPipe,
   Patch,
   Post,
-  Request,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
@@ -19,6 +18,7 @@ import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDTO } from './dtos/update-user.dto';
 import { Roles } from './decorators/roles.decorator';
 import { JwtGuard } from './guards/jwt.auth.guard';
+import { QueryDto } from 'src/common/dtos/query.dto';
 
 @Controller('v1/users')
 export class UserController {
@@ -30,8 +30,8 @@ export class UserController {
   @Get()
   @Roles(['admin'])
   @UseGuards(JwtGuard)
-  async findAll(): Promise<User[]> {
-    return this.userService.findAll();
+  async findAll(@Query() query: QueryDto): Promise<object> {
+    return this.userService.findAll(query);
   }
 
   // @docs Admin can get one user by its id
