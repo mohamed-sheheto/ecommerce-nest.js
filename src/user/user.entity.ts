@@ -1,3 +1,4 @@
+import { Exclude } from 'class-transformer';
 import { IsEmail, IsNotEmpty, MaxLength, MinLength } from 'class-validator';
 import {
   Column,
@@ -34,6 +35,7 @@ export class User {
   email: string;
 
   @Column({ select: false })
+  @Exclude()
   @MinLength(8, { message: 'password must be at least 8 characters' })
   @MaxLength(20, { message: 'password must be at most 20 characters' })
   @IsNotEmpty()
