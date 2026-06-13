@@ -7,7 +7,7 @@ import {
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
-import { Roles } from '../decorators/roles.decorator';
+import { Roles } from '../../../user/decorators/roles.decorator';
 
 @Injectable()
 export class JwtGuard implements CanActivate {
@@ -30,7 +30,7 @@ export class JwtGuard implements CanActivate {
       const payload = await this.jwtService.verifyAsync<{
         role: string;
         email: string;
-        id: number;
+        id: string;
       }>(token);
 
       if (

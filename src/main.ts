@@ -8,12 +8,16 @@ async function bootstrap() {
   const configService: ConfigService = app.get(ConfigService);
 
   app.useGlobalPipes(
-    new ValidationPipe({ forbidNonWhitelisted: true, whitelist: true }),
+    new ValidationPipe({
+      forbidNonWhitelisted: true,
+      whitelist: true,
+      transform: true,
+    }),
   );
-  app.setGlobalPrefix('api');
+  app.setGlobalPrefix('api/v1');
 
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
   await app.listen(configService.get('PORT') ?? 3000);
 }
 
-bootstrap();
+void bootstrap();

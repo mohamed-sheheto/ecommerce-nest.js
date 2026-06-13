@@ -2,8 +2,8 @@ import { Module } from '@nestjs/common';
 import { DatabaseModule } from './database/database.module';
 import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './user/user.module';
-import { JwtGuardModule } from './user/guards/jwt.guard.module';
 import { AuthModule } from './auth/auth.module';
+import { JwtGuardModule } from './common/guards/jwtGuard/jwt.guard.module';
 
 @Module({
   imports: [
@@ -14,4 +14,4 @@ import { AuthModule } from './auth/auth.module';
     AuthModule,
   ],
 })
-export class AppModule {}
+export class AppModule { }

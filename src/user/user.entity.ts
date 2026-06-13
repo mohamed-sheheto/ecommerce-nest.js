@@ -8,7 +8,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-import { v7 as uuidv7 } from 'uuid'
+import { v7 as uuidv7 } from 'uuid';
 export enum role {
   'user',
   'admin',
@@ -35,6 +35,7 @@ export class User {
   email: string;
 
   @Column({ select: false })
+  @Exclude()
   @MinLength(8, { message: 'password must be at least 8 characters' })
   @MaxLength(20, { message: 'password must be at most 20 characters' })
   @IsNotEmpty()
