@@ -33,7 +33,6 @@ export class UserService {
     if (await this.userRepository.findOneBy({ email: createUserDTO.email })) throw new HttpException("user already exist", 400)
 
     const password = await bcrypt.hash(createUserDTO.password, 12);
-
     const user = await this.userRepository.save({ ...createUserDTO, password })
 
     return {

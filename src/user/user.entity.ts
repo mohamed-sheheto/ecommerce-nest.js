@@ -1,3 +1,4 @@
+import { Exclude } from 'class-transformer';
 import { IsEmail, IsNotEmpty, MaxLength, MinLength } from 'class-validator';
 import {
   Column,
@@ -37,6 +38,7 @@ export class User {
   @MinLength(8, { message: 'password must be at least 8 characters' })
   @MaxLength(20, { message: 'password must be at most 20 characters' })
   @IsNotEmpty()
+  @Exclude()
   password: string;
 
   @Column({ type: 'enum', enum: ['user', 'admin'], default: 'user' })
@@ -60,7 +62,7 @@ export class User {
   @Column({ nullable: true })
   verificationCode: string;
 
-  @Column({ type: 'enum', enum: ['male', 'female'] })
+  @Column({ type: 'enum', enum: ['male', 'female'], nullable: true })
   gender: gender;
 
   @CreateDateColumn()
